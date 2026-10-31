@@ -19,8 +19,8 @@
       ["nein", "Nein, ich zahle in die gesetzliche Rentenversicherung"],
       ["unklar", "Weiß ich nicht genau"]] },
     { id: "bu", q: "Hast du eine private Berufsunfähigkeitsversicherung?", opts: [
-      ["passt", "Ja, und die Rente passt zu meinem heutigen Einkommen"],
-      ["alt", "Ja, aber aus Studium oder Referendariat, oder ich weiß es nicht genau"],
+      ["geprueft", "Ja, und in den letzten zwei, drei Jahren prüfen lassen"],
+      ["alt", "Ja, aber länger nicht geprüft, oder ich weiß es nicht genau"],
       ["nein", "Nein, bisher nicht"]] },
     { id: "kv", q: "Wie bist du krankenversichert?", opts: [
       ["gkv", "Gesetzlich (GKV)"],
@@ -126,79 +126,84 @@
   function worst(a, b) { return RANK[a] >= RANK[b] ? a : b; }
   function has(id, v) { return (answers[id] || []).indexOf(v) >= 0; }
 
+  // Texte bewusst kurz und ohne Fachbegriffe (Rückmeldung 31.10.2026): Befund + fetter Handlungssatz (d), Erklärungen hinter „Mehr dazu“.
   function areas() {
     var a = answers, ref = a.phase === "referendariat", selbst = a.phase === "selbst", out = [];
+    var OPTION = "Willst du dir die PKV offenhalten, solltest du dir schon jetzt mit einem Optionstarif" + (ref ? " oder einer Anwartschaft" : "") + " deinen heutigen Gesundheitszustand sichern.";
 
     // Versorgungswerk
-    if (ref) out.push({ t: "Versorgungswerk", s: "pruefen", link: "versorgungswerke.html", p: ["Aus dem Referendariat hast du Rentenzeiten. Ob sie später im Versorgungswerk landen, hängt von einem Antrag ab, und der hat eine Frist."] });
-    else if (selbst) out.push({ t: "Versorgungswerk", s: "pruefen", link: "versorgungswerke.html", p: ["Als Selbstständiger gelten andere Beitragsregeln als im Angestelltenverhältnis. Was du ans Versorgungswerk zahlst und was darüber hinaus sinnvoll ist, solltest du gezielt entscheiden."] });
-    else if (a.vw === "ja") out.push({ t: "Versorgungswerk", s: "ok", link: "versorgungswerke.html", p: ["Du bist befreit und im Versorgungswerk. Wichtig bleibt, was deine Satzung bei Berufsunfähigkeit wirklich leistet. Das regelt jedes der 16 Versorgungswerke anders."] });
-    else if (a.vw === "nein") out.push({ t: "Versorgungswerk", s: "pruefen", link: "versorgungswerke.html", p: [a.phase === "syndikus"
-      ? "Du zahlst in die gesetzliche Rentenversicherung. Als Syndikusrechtsanwalt ist eine Befreiung zugunsten des Versorgungswerks möglich, wenn die Zulassung für deine Stelle passt. Ob sich das für dich lohnt, sollte jemand prüfen."
-      : "Du zahlst in die gesetzliche Rentenversicherung. Als zugelassener Anwalt ist meist eine Befreiung zugunsten des Versorgungswerks möglich. Ob sich das für dich lohnt, sollte jemand prüfen."] });
-    else out.push({ t: "Versorgungswerk", s: "blick", link: "versorgungswerke.html", p: ["Ob du befreit bist, entscheidet, wohin deine Rentenbeiträge fließen und wer dich bei Berufsunfähigkeit absichert. Das solltest du sicher wissen."] });
+    var vw = { t: "Versorgungswerk", link: "versorgungswerke.html" };
+    if (ref) { vw.s = "pruefen"; vw.p = ["Deine Rentenzeiten aus dem Referendariat landen nicht automatisch im Versorgungswerk. Dafür brauchst du einen Antrag, und der hat eine Frist."]; vw.d = "Antragsfrist im Blick behalten"; }
+    else if (selbst) { vw.s = "pruefen"; vw.p = ["Als Selbstständiger zahlst du nach eigenen Regeln ins Versorgungswerk. Wie viel dort sinnvoll ist und was du daneben aufbaust, lohnt sich einmal durchzurechnen."]; vw.d = "Beitrag und Vorsorge durchrechnen"; }
+    else if (a.vw === "ja") { vw.s = "ok"; vw.p = ["Du bist im Versorgungswerk, das ist deine Basis. Was es im Ernstfall leistet, regelt jedes Bundesland anders."]; vw.d = "Leistung im Ernstfall kennen"; }
+    else if (a.vw === "nein") { vw.s = "pruefen"; vw.p = ["Du zahlst in die gesetzliche Rente. Als " + (a.phase === "syndikus" ? "Syndikus kannst du dich befreien lassen, wenn deine Zulassung zur Stelle passt," : "Anwalt kannst du dich meist befreien lassen") + " und stattdessen ins Versorgungswerk zahlen. Ob das für dich besser ist, prüfen wir."]; vw.d = "Befreiung prüfen lassen"; }
+    else { vw.s = "blick"; vw.p = ["Ob du befreit bist, entscheidet, wo deine Rentenbeiträge landen. Das solltest du sicher wissen, und es lässt sich schnell klären."]; vw.d = "Status klären"; }
+    out.push(vw);
 
     // Berufsunfähigkeit
-    if (a.bu === "passt") out.push({ t: "Berufsunfähigkeit", s: "ok", link: "berufsunfaehigkeit.html", p: ["Klingt gut. Prüfenswert bleibt, ob die Rente mit deinem Gehalt mitwachsen kann und wie die Versicherung mit deinem Versorgungswerk zusammenspielt."] });
-    else if (a.bu === "alt") out.push({ t: "Berufsunfähigkeit", s: "pruefen", link: "berufsunfaehigkeit.html", p: ["Eine BU aus Studium oder Referendariat passt oft nicht mehr zum heutigen Gehalt. Viele Verträge lassen sich über die Nachversicherung erhöhen, ohne neue Gesundheitsfragen. Das solltest du kennen, bevor die Fristen dafür ablaufen."] });
-    else out.push({ t: "Berufsunfähigkeit", s: "blick", link: "berufsunfaehigkeit.html", p: [(ref ? "Im Referendariat sichert dich das Versorgungswerk in der Regel noch nicht ab. Und später zahlt es nur nach eigenen Regeln:" : "Das Versorgungswerk zahlt bei Berufsunfähigkeit nach eigenen Regeln:") + " je nach Land mit bis zu 60 Monaten Wartezeit, und in 11 von 16 Versorgungswerken hängt die Rente zumindest teilweise an der Zulassung." +
-      (ref ? " Je jünger und gesünder du beim Abschluss bist, desto günstiger ist der Beitrag in der Regel." : "")] });
+    var bu = { t: "Berufsunfähigkeit", link: "berufsunfaehigkeit.html" };
+    if (a.bu === "geprueft") { bu.s = "ok"; bu.p = ["Gut so. Faustregel: alle zwei bis drei Jahre gegenprüfen. Tarife werden laufend besser und oft günstiger."]; bu.d = "Alle 2–3 Jahre gegenprüfen"; }
+    else if (a.bu === "alt") { bu.s = "pruefen"; bu.p = ["Seit deinem Abschluss hat sich am Markt viel getan. Wir schauen auf Rentenhöhe, Laufzeit und Bedingungen, und ob sich alte Ausschlüsse heute wieder streichen lassen."]; bu.d = "Vertrag checken lassen"; }
+    else { bu.s = "blick"; bu.d = "Private BU prüfen, solange du gesund bist"; bu.p = [ref
+      ? "Im Referendariat sichert dich das Versorgungswerk meist noch gar nicht ab, und später zahlt es nur unter strengen Bedingungen. Jung und gesund ist der beste Zeitpunkt für eine private BU."
+      : "Viele verlassen sich darauf, dass ihr Versorgungswerk bei Berufsunfähigkeit zahlt. Das tut es aber nur unter strengen Bedingungen: meist erst, wenn du gar nicht mehr als Anwalt arbeiten kannst, oft erst nach Rückgabe der Zulassung. Eine private BU ist deshalb in aller Regel sinnvoll. Welche zu dir passt, klären wir gemeinsam."]; }
+    out.push(bu);
 
     // Krankenversicherung
-    var kv;
-    if (a.kv === "pkv") kv = { s: "ok", p: ["Du bist privat versichert. Wichtig ist, dass dein Beitrag auch im Alter tragbar bleibt, etwa über einen Beitragsentlastungstarif." + (selbst ? " Als Selbstständiger gehört ein passendes Krankentagegeld dazu." : "")] };
-    else if (a.kv === "beihilfe") kv = { s: "pruefen", p: ["Mit dem Ende des Referendariats endet in der Regel auch die Beihilfe. Dann stellt sich die Frage GKV oder PKV neu, und die Entscheidung wirkt über Jahrzehnte. Mit einem Optionstarif oder einer Anwartschaft sicherst du dir schon heute deinen Gesundheitszustand. Liegt dein Einkommen später über der Grenze oder machst du dich selbstständig, ist der Weg in die PKV frei, ohne neue Gesundheitsprüfung."] };
-    else if (selbst) kv = { s: "pruefen", p: ["Als Selbstständiger zahlst du in der GKV den ganzen Beitrag allein, im Höchstfall rund 1.400 € im Monat (2027, mit Pflege). In die PKV kannst du unabhängig vom Einkommen wechseln. Ein Vergleich lohnt sich."] };
-    else if (ref) kv = { s: "pruefen", p: ["In der GKV bist du gut aufgehoben. Ob das so bleiben soll, entscheidest du aber erst in ein paar Jahren, und bis dahin kann sich deine Gesundheit ändern. Mit einem Optionstarif oder einer Anwartschaft sicherst du dir schon heute deinen Gesundheitszustand. Liegt dein Einkommen später über der Grenze oder machst du dich selbstständig, ist der Weg in die PKV frei, ohne neue Gesundheitsprüfung."] };
-    else if (a.eink === "ueber") kv = { s: "pruefen", p: ["Mit deinem Gehalt über der Versicherungspflichtgrenze kannst du zwischen GKV und PKV wählen. Die Entscheidung gilt praktisch für Jahrzehnte, deshalb lohnt der Vergleich beider Wege, auch im Alter."] };
-    else kv = has("plan", "gehalt")
-      ? { s: "pruefen", p: ["Mit dem Gehaltssprung kann sich das Fenster zwischen GKV und PKV öffnen. Schau früh hin. Mit einem Optionstarif oder einer Anwartschaft sicherst du dir schon heute deinen Gesundheitszustand. Liegt dein Einkommen später über der Grenze oder machst du dich selbstständig, ist der Weg in die PKV frei, ohne neue Gesundheitsprüfung."] }
-      : { s: "ok", p: ["Bei deinem Gehalt bist du in der GKV pflichtversichert. Spannend wird es, sobald du über die Versicherungspflichtgrenze kommst. Mit einem Optionstarif oder einer Anwartschaft sicherst du dir schon heute deinen Gesundheitszustand. Liegt dein Einkommen später über der Grenze oder machst du dich selbstständig, ist der Weg in die PKV frei, ohne neue Gesundheitsprüfung."] };
-    out.push({ t: "Krankenversicherung", s: kv.s, link: "pkv-gkv.html", p: kv.p });
+    var kv = { t: "Krankenversicherung", link: "pkv-gkv.html" };
+    if (a.kv === "pkv") { kv.s = "ok"; kv.d = "Beitragsplan fürs Alter aufsetzen"; kv.p = [selbst
+      ? "Privat versichert, gut. Als Selbstständiger trägst du den Beitrag allein, auch im Alter. Deshalb lohnt ein strategischer Beitragsplan, der deine PKV im Ruhestand mitfinanziert, dazu ein passendes Krankentagegeld."
+      : "Privat versichert, gut. Damit dein Beitrag auch im Ruhestand entspannt bleibt, gehört ein strategischer Beitragsplan fürs Alter dazu." + (ref ? "" : " Als Angestellter zahlt dein Arbeitgeber dabei mit.")]; }
+    else if (a.kv === "beihilfe") { kv.s = "pruefen"; kv.d = "Optionstarif jetzt sichern"; kv.p = ["Nach dem Referendariat endet die Beihilfe meist, dann versicherst du dich neu: gesetzlich oder privat. " + OPTION]; }
+    else if (selbst) { kv.s = "pruefen"; kv.d = "GKV und PKV vergleichen"; kv.p = ["Als Selbstständiger zahlst du in der GKV alles allein, bis rund 1.400 € im Monat. In die PKV kannst du unabhängig vom Einkommen wechseln."]; }
+    else if (ref) { kv.s = "pruefen"; kv.d = "Optionstarif jetzt sichern"; kv.p = ["Ob du in der GKV bleibst, entscheidest du erst in ein paar Jahren, und bis dahin kann sich deine Gesundheit ändern. " + OPTION]; }
+    else if (a.eink === "ueber") { kv.s = "pruefen"; kv.d = "GKV und PKV vergleichen"; kv.p = ["Du darfst zwischen GKV und PKV wählen. Die Entscheidung begleitet dich über Jahrzehnte, deshalb lohnt der Vergleich."]; }
+    else if (has("plan", "gehalt")) { kv.s = "pruefen"; kv.d = "Optionstarif jetzt sichern"; kv.p = ["Mit dem Gehaltssprung darfst du vielleicht bald in die PKV. Dafür solltest du dir schon jetzt mit einem Optionstarif deinen heutigen Gesundheitszustand sichern."]; }
+    else { kv.s = "ok"; kv.d = "Optionstarif jetzt sichern"; kv.p = ["Bei deinem Gehalt bist du in der GKV pflichtversichert. " + OPTION]; }
+    out.push(kv);
 
     // Altersvorsorge
-    var av = answers.av || [], avp = [], avs = "ok";
+    var av = answers.av || [], avc = { t: "Altersvorsorge", link: "altersvorsorge.html", html: true, p: [] };
     if (has("av", "noch")) {
-      avs = ref ? "pruefen" : "blick";
-      avp.push(ref ? "Mit dem Berufsstart ist ein guter Moment, die Vorsorge aufzusetzen. Ab 2027 gibt es dafür das Altersvorsorgedepot, erstmals auch für Mitglieder von Versorgungswerken gefördert."
-        : "Das Versorgungswerk ersetzt im Alter meist nur einen Teil deines letzten Einkommens. Je früher du ergänzt, desto kleiner ist die nötige Rate.");
+      avc.s = ref ? "pruefen" : "blick"; avc.d = "Vorsorge starten";
+      avc.p.push(ref ? "Mit dem Berufsstart ist der beste Moment für deine Vorsorge. Ab 2027 gibt es dafür erstmals staatliche Zulagen, auch für Mitglieder von Versorgungswerken."
+        : "Das Versorgungswerk allein reicht im Alter meist nicht für deinen Lebensstandard. Je früher du ergänzt, desto kleiner ist die nötige Rate.");
     } else {
       var T = {
-        privrv: "<strong>Private Rentenversicherung:</strong> Ältere Verträge haben oft niedrige Garantien und hohe Kosten. Ob Weiterführen, Ruhenlassen oder Umbauen besser ist, sieht man nur am Vertrag.",
-        riester: "<strong>Riester oder Altersvorsorgedepot:</strong> Ab 2027 löst das Altersvorsorgedepot Riester für neue Verträge ab. Wer schon riestert, sollte erst prüfen und dann entscheiden.",
+        privrv: "<strong>Private Rentenversicherung:</strong> Ältere Verträge sind oft teuer. Ob weiterführen oder umbauen, zeigt ein Blick in den Vertrag.",
+        riester: "<strong>Riester oder Altersvorsorgedepot:</strong> Ab 2027 ändern sich die Regeln. Bestehende Verträge erst prüfen, dann entscheiden.",
         bav: "<strong>bAV:</strong> Entscheidend sind Arbeitgeberzuschuss und Kosten, und bei einem Stellenwechsel die Frage, was mit dem Vertrag passiert.",
-        police: "<strong>ETF-Police:</strong> Ob sie sich gegenüber einem normalen Depot rechnet, hängt an Kosten, Laufzeit und der Besteuerung bei der Auszahlung.",
-        etf: "<strong>ETF-Sparplan:</strong> eine gute Basis. Prüfenswert ist, ob du zusätzlich die Förderung des Altersvorsorgedepots mitnimmst, bis zu 540 € Zulage im Jahr.",
-        bank: "<strong>Sparplan oder Sparkonto bei der Bank:</strong> Die Zinsen liegen oft unter der Inflation, und Bankfonds kosten häufig Ausgabeaufschläge."
+        police: "<strong>ETF-Police:</strong> Kann sich lohnen, vor allem wegen des Steuervorteils im Alter. Entscheidend sind die Kosten.",
+        etf: "<strong>ETF-Sparplan:</strong> Gute Basis. Prüf, ob du zusätzlich bis zu 540 € Zulage im Jahr mitnehmen kannst. Und weißt du schon, wie viel Steuer später auf deine Gewinne anfällt?",
+        bank: "<strong>Sparplan oder Sparkonto bei der Bank:</strong> Bankzinsen liegen meist nur etwa auf Höhe der Inflation. Dein Geld ist sicher, wächst aber kaum. Für echten Vermögensaufbau braucht es mehr."
       };
-      ["privrv", "riester", "bav", "police", "etf", "bank"].forEach(function (k) { if (av.indexOf(k) >= 0) avp.push(T[k]); });
-      if (av.length === 1 && av[0] === "etf") avs = "ok";
-      else if (av.length === 1 && av[0] === "bank") avs = "blick";
-      else avs = "pruefen";
+      ["privrv", "riester", "bav", "police", "etf", "bank"].forEach(function (k) { if (av.indexOf(k) >= 0) avc.p.push(T[k]); });
+      if (av.length === 1 && av[0] === "etf") { avc.s = "ok"; avc.d = "Zulage und Steuervorteil mitnehmen"; }
+      else if (av.length === 1 && av[0] === "bank") { avc.s = "blick"; avc.d = "Sparen mit Rendite aufsetzen"; }
+      else { avc.s = "pruefen"; avc.d = "Kosten und Steuer prüfen"; }
     }
-    out.push({ t: "Altersvorsorge", s: avs, link: "altersvorsorge.html", p: avp, html: true });
+    out.push(avc);
 
     // Was ansteht
     var pl = answers.plan || [], pp = [], ps = "ok";
     if (pl.indexOf("wechsel") >= 0) {
       ps = worst(ps, "blick");
-      pp.push("<strong>Stellenwechsel:</strong> Die Befreiung von der Rentenversicherung ist in der Regel neu zu beantragen, mit kurzer Frist." +
-        (a.phase === "syndikus" ? " Als Syndikusrechtsanwalt brauchst du für die neue Stelle meist auch eine neue Zulassung." : "") +
-        " Auch bAV und BU-Nachversicherung gehören dann auf den Tisch.");
+      pp.push("<strong>Neue Stelle:</strong> Die Befreiung musst du meist neu beantragen, mit kurzer Frist." +
+        (a.phase === "syndikus" ? " Als Syndikus brauchst du meist auch eine neue Zulassung." : "") + " Auch bAV und BU gehören dann auf den Prüfstand.");
     }
     if (pl.indexOf("selbst") >= 0) {
       ps = worst(ps, "blick");
-      pp.push("<strong>Selbstständigkeit:</strong> Beitrag zum Versorgungswerk, Krankenversicherung und Steuern ändern sich auf einmal. Versorgungswerk und Basisrente teilen sich einen gemeinsamen steuerlichen Höchstbetrag, der Spielraum ist oft kleiner als gedacht.");
+      pp.push("<strong>Selbstständigkeit:</strong> Versorgungswerk, Krankenversicherung und Steuern ändern sich auf einen Schlag. Das planst du am besten vorher.");
     }
     if (pl.indexOf("gehalt") >= 0) {
       ps = worst(ps, "pruefen");
-      pp.push("<strong>Gehaltssprung:</strong> ein typischer Anlass, die BU-Rente über die Nachversicherung anzuheben. Er kann auch das Fenster zwischen GKV und PKV öffnen.");
+      pp.push("<strong>Gehaltssprung:</strong> Guter Zeitpunkt, die BU-Rente anzuheben. Und vielleicht darfst du danach in die PKV.");
     }
     if (pl.indexOf("familie") >= 0) {
       ps = worst(ps, "pruefen");
-      pp.push("<strong>Familie, Kind oder Immobilie:</strong> Viele BU-Verträge lassen sich zu solchen Anlässen ohne neue Gesundheitsfragen erhöhen. Das Altersvorsorgedepot zahlt ab 2027 zusätzlich 300 € Zulage je Kind.");
+      pp.push("<strong>Familie, Kind oder Immobilie:</strong> Jetzt lässt sich die BU oft ohne Gesundheitsfragen erhöhen. Und ab 2027 gibt es 300 € Zulage je Kind.");
     }
-    if (pp.length) out.push({ t: "Was bei dir ansteht", s: ps, p: pp, html: true });
+    if (pp.length) out.push({ t: "Was bei dir ansteht", s: ps, p: pp, html: true, d: "Vorher planen, Fristen beachten" });
 
     return out.sort(function (x, y) { return RANK[y.s] - RANK[x.s]; });
   }
@@ -220,7 +225,7 @@
       var body = x.p.length > 1 ? "<ul>" + x.p.map(function (s) { return "<li>" + (x.html ? s : esc(s)) + "</li>"; }).join("") + "</ul>"
         : "<p>" + (x.html ? x.p[0] : esc(x.p[0])) + "</p>";
       return '<article class="res-card res-' + x.s + '"><p class="res-badge">' + LABEL[x.s] + "</p><h3>" + esc(x.t) + "</h3>" + body +
-        (x.link ? '<p class="res-more"><a href="' + x.link + '">Mehr dazu</a></p>' : "") + "</article>";
+        (x.d ? '<p class="res-do">→ ' + esc(x.d) + "</p>" : "") + (x.link ? '<p class="res-more"><a href="' + x.link + '">Mehr dazu</a></p>' : "") + "</article>";
     }).join("");
     box.innerHTML =
       '<div class="quiz-top"><span>Deine Auswertung</span><div class="quiz-bar" aria-hidden="true"><span style="width:100%"></span></div></div>' +
