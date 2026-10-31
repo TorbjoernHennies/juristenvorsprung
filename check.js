@@ -61,13 +61,10 @@
 
     items.push(item("Berufsunfähigkeit", "tag-frist", werk + " sichert Berufsunfähigkeit ab, aber nach eigenen Regeln: mit Wartezeit, mit Bedingungen und mit einer eigenen Definition, wann du als berufsunfähig giltst. Kennst du sie, und reicht das für dich?"));
 
-    if (items.length < 3) {
-      items.push(item("Tipp", "", "Auch ohne akuten Anlass lohnt sich ein Blick darauf, was dein Versorgungswerk leistet und was nicht."));
-    }
-
     var name = d ? " für " + esc(d.n) : "";
     out.innerHTML =
-      "<h3>Darüber solltest du nachdenken" + name + "</h3><ul>" + items.slice(0, 5).join("") + "</ul>" +
+      "<h3>Darüber solltest du nachdenken" + name + "</h3><ul>" + items.slice(0, 4).concat(item("Unser Rat", "tag-gold",
+        "Lass das einmal in Ruhe gegenprüfen: was dein Versorgungswerk leistet, was du privat ergänzen solltest und ob beides auch zu deinen nächsten Karriereschritten passt. Ein Gespräch, danach weißt du, woran du bist.")).join("") + "</ul>" +
       '<p><a class="btn btn-navy" href="' + TARGET + '">Das im Gespräch klären</a></p>' +
       '<p class="check-foot">Orientierung, keine Beratung. Deine Auswahl bleibt in deinem Browser.</p>';
     out.className = "check-result show";

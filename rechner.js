@@ -2,7 +2,7 @@
 // Regeln (Stand Oktober 2026, vor Livegang gegen Gesetzestext prüfen):
 // Grundzulage 50 % auf die ersten 360 € und 25 % auf weitere Beiträge bis 1.800 € im Jahr,
 // Kinderzulage 100 % des Eigenbeitrags, höchstens 300 € je Kind, Bonus 200 € einmalig unter 25,
-// Mindestbeitrag 120 € im Jahr. Die Steuerersparnis ist eine grobe Schätzung (Tarif 2026, pauschale Abzüge).
+// Mindestbeitrag 120 € im Jahr. Die Steuerersparnis ist eine grobe Schätzung (Tarif 2027 laut Regierungsentwurf vom 02.09.2026, pauschale Abzüge).
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
@@ -13,13 +13,14 @@
   function eur(n) { return Math.round(n).toLocaleString("de-DE") + " €"; }
   function pct(n) { return n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " %"; }
 
-  // Grenzsteuersatz nach Einkommensteuertarif 2026 (vereinfacht, Alleinstehende)
+  // Grenzsteuersatz nach Einkommensteuertarif 2027, Regierungsentwurf (vereinfacht, Alleinstehende)
   function grenzsatz(zve) {
-    if (zve <= 12348) return 0;
-    if (zve <= 17799) return (14 + (zve - 12348) / (17799 - 12348) * 10) / 100;
-    if (zve <= 69878) return (24 + (zve - 17799) / (69878 - 17799) * 18) / 100;
-    if (zve <= 277825) return 0.42;
-    return 0.45;
+    if (zve <= 12564) return 0;
+    if (zve <= 17800) return (14 + (zve - 12564) / (17800 - 12564) * 10) / 100;
+    if (zve <= 70600) return (24 + (zve - 17800) / (70600 - 17800) * 18) / 100;
+    if (zve <= 250000) return 0.42;
+    if (zve <= 280000) return 0.45;
+    return 0.47;
   }
 
   function tween(node, to, fmt) {
@@ -54,7 +55,7 @@
     var erstes = zul + bonus;
     var jahre = Math.max(0, 67 - alter);
     var ges = ok ? zul * jahre + bonus : 0;
-    var zve = Math.max(0, 0.8 * brutto - 1230);
+    var zve = Math.max(0, 0.8 * brutto - 1430); // Arbeitnehmer-Pauschbetrag 2027
     var rate = grenzsatz(zve);
     var steuer = ok ? Math.max(0, rate * (foerd + zul) - zul) : 0;
     var quote = ok && eig + erstes > 0 ? erstes / (eig + erstes) * 100 : 0;
