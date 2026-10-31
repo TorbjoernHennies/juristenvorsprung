@@ -103,3 +103,48 @@
     Object.keys(map).forEach(function (id) { spy.observe(document.getElementById(id)); });
   }
 })();
+
+// Wechselndes Wort in der Überschrift und hochzählende Zahlen in der Zahlenleiste.
+(function () {
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var rotor = document.querySelector(".rotor[data-words]");
+  if (rotor && !reduce) {
+    var words = rotor.getAttribute("data-words").split("|"), k = 0;
+    setInterval(function () {
+      if (document.hidden) return;
+      rotor.classList.add("out");
+      setTimeout(function () {
+        k = (k + 1) % words.length;
+        rotor.textContent = words[k];
+        rotor.classList.remove("out");
+        rotor.classList.add("in-start");
+        void rotor.offsetWidth;
+        rotor.classList.remove("in-start");
+      }, 350);
+    }, 2800);
+  }
+
+  // Nur reine Zahlen bis 999 zählen hoch („16“, „0 bis 60“ bleibt stehen, Jahreszahlen auch)
+  if (reduce || !("IntersectionObserver" in window)) return;
+  var nums = Array.prototype.filter.call(document.querySelectorAll(".statbar strong"), function (el) {
+    var m = el.textContent.trim().match(/^(\d{1,3})(\s.*)?$/);
+    return m && Number(m[1]) > 1;
+  });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      var el = e.target, m = el.textContent.trim().match(/^(\d{1,3})(.*)$/), to = Number(m[1]), rest = m[2], t0 = null;
+      function step(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / 1100);
+        el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))) + rest;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  nums.forEach(function (el) { io.observe(el); });
+})();

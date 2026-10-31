@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Versorgungswerk-Check | JuristenVorsprung</title>
 <meta name="description" content="Alle 16 Anwaltsversorgungswerke im Vergleich: Beitrag, Berufsanfänger-Rabatt, BU-Wartezeit und Zulassungsregel.">
+<link rel="canonical" href="https://www.juristenvorsprung.de/versorgungswerke.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="JuristenVorsprung">
+<meta property="og:title" content="Versorgungswerk-Check | JuristenVorsprung">
+<meta property="og:description" content="Alle 16 Anwaltsversorgungswerke im Vergleich: Beitrag, Berufsanfänger-Rabatt, BU-Wartezeit und Zulassungsregel.">
+<meta property="og:url" content="https://www.juristenvorsprung.de/versorgungswerke.html">
+<meta property="og:image" content="https://www.juristenvorsprung.de/assets/og-juristenvorsprung.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="JuristenVorsprung: Du kennst das Recht. Wir kennen dein Versorgungswerk.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="assets/jv-waage.png">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -19,16 +31,20 @@
 </header>
 <main id="inhalt">
 <section class="page-hero"><div class="wrap">
-  <h1>Was solltest du in deinem Versorgungswerk wissen?</h1>
-  <p class="lead">Wähle dein Land und sieh, welche Punkte du für dein Versorgungswerk klären solltest. Die konkreten Regeln gehen wir im Gespräch durch.</p>
+  <h1>16 Versorgungswerke, 16 Satzungen. Was gilt bei dir?</h1>
+  <p class="lead">Tippe auf dein Bundesland und sieh, welche Punkte du für dein Versorgungswerk klären solltest. Die konkreten Regeln gehen wir im Gespräch durch.</p>
 </div></section>
+<section class="statbar" aria-label="Die Versorgungswerke im Vergleich"><div class="wrap"><div class="statbar-grid three"><div><strong>16</strong><span>Satzungen im Original ausgewertet</span></div><div><strong>0 bis 60</strong><span>Monate Wartezeit bis zur BU-Rente, je nach Land</span></div><div><strong>11 von 16</strong><span>knüpfen die BU-Rente zumindest teilweise an die Zulassung</span></div></div></div></section>
 <section class="band">
-  <div class="wrap">
-    <div class="finder">
+  <div class="wrap vw-layout">
+    <div class="vw-map" id="vw-map"></div>
+    <div class="finder vw-panel">
       <label for="vw-select">Dein Versorgungswerk</label>
-      <select id="vw-select"><option value="">Bitte wählen</option></select>
-      <div id="vw-result" class="finder-result" aria-live="polite"></div>
+      <select id="vw-select"><option value="">Auf der Karte tippen oder hier wählen</option></select>
+      <div id="vw-result" class="finder-result show" aria-live="polite"><p class="vw-empty">Wähle dein Bundesland. Du siehst sofort, welche Fragen du für deine Satzung klären solltest.</p></div>
     </div>
+  </div>
+  <div class="wrap">
 
     <p class="hinweis"><strong>Wichtig:</strong> Die Fragen sind eine Orientierung. Satzungen unterscheiden sich von Land zu Land, ändern sich und haben Ausnahmen. Sie ersetzen nicht die Prüfung deiner Satzung und deiner persönlichen Situation. Allgemeine Information, keine Rechts-, Steuer- oder Anlageberatung.</p>
 
@@ -47,6 +63,7 @@
         <p class="footer-claim">JuristenVorsprung<br>Versorgung · Vermögen · Strategie</p>
         <p class="fine-light">JuristenVorsprung ist Finanzberatung, keine Kanzlei. Wir bieten keine Rechtsberatung an.</p>
         <p class="footer-cta"><a class="btn btn-gold btn-small" href="termin.html">Erstgespräch vereinbaren</a></p>
+        <p class="footer-reg"><a href="https://www.vermittlerregister.info" rel="noopener">Eingetragen im Vermittlerregister (DIHK): D-IIWA-8MORE-66 · D-F-133-V67G-56</a></p>
       </div>
       <div>
         <h4>Themen</h4>
@@ -78,7 +95,7 @@
 <script src="config.js"></script>
 <script src="script.js"></script>
 <script src="ui.js"></script>
-<script src="vw-data.js"></script><script src="versorgungswerke.js"></script>
+<script src="vw-data.js"></script><script src="vw-geo.js"></script><script src="vw-map.js"></script><script src="versorgungswerke.js"></script>
 <script src="track.js"></script>
 </body>
 </html>
