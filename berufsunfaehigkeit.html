@@ -43,35 +43,14 @@
       <p class="hero-note">Für Rechtsanwälte, Notare, Syndici und Referendare. Aus den Originalsatzungen aller 16 Versorgungswerke ausgewertet.</p>
     </div>
     <section class="check" aria-labelledby="check-title">
-      <h2 id="check-title">Dein Check in drei Fragen</h2>
-      <p class="sub">Dauert eine Minute. Deine Auswahl bleibt in deinem Browser.</p>
-      <form id="check-form" novalidate>
-        <label>Wo stehst du gerade?
-          <select name="phase">
-            <option value="">Bitte wählen</option>
-            <option value="referendariat">Referendariat</option>
-            <option value="einstieg">Berufseinstieg</option>
-            <option value="angestellt">Angestellt in einer Kanzlei</option>
-            <option value="syndikus">Syndikusrechtsanwalt</option>
-            <option value="selbststaendig">Selbstständig oder Partner</option>
-          </select>
-        </label>
-        <label>Dein Versorgungswerk
-          <select name="land"><option value="">Weiß ich nicht</option></select>
-        </label>
-        <label>Was ist zuletzt passiert?
-          <select name="ereignis">
-            <option value="">Bitte wählen</option>
-            <option value="wechsel">Kanzlei oder Arbeitgeber gewechselt</option>
-            <option value="start">Berufsstart oder Zulassung</option>
-            <option value="selbst">Selbstständig gemacht</option>
-            <option value="gehalt">Gehaltssprung</option>
-            <option value="nichts">Nichts davon</option>
-          </select>
-        </label>
-        <button type="submit" class="btn btn-block">Check starten</button>
-      </form>
-      <div id="check-result" class="check-result" aria-live="polite"></div>
+      <h2 id="check-title">Wie gut bist du abgesichert?</h2>
+      <p class="sub">Ein paar Klicks, keine E-Mail-Adresse. Deine Antworten bleiben in deinem Browser.</p>
+      <ul class="checks">
+        <li>Versorgungswerk und BU</li>
+        <li>Krankenversicherung</li>
+        <li>Altersvorsorge</li>
+      </ul>
+      <p style="margin-top:1.2rem"><a class="btn btn-block" href="2-minuten-check.html">Zum 2-Minuten-Check</a></p>
     </section>
   </div>
 </section>
@@ -200,7 +179,7 @@
 <script src="config.js"></script>
 <script src="script.js"></script>
 <script src="ui.js"></script>
-<script src="vw-data.js"></script><script src="vw-geo.js"></script><script src="vw-map.js"></script><script>VWMap(document.getElementById("vw-mini-map"), function (i) { location.href = "versorgungswerke.html?land=" + i; });</script><script src="check.js"></script>
+<script src="vw-data.js"></script><script src="vw-geo.js"></script><script src="vw-map.js"></script><script>VWMap(document.getElementById("vw-mini-map"), function (i) { location.href = "versorgungswerke.html?land=" + i; });</script>
 <script src="track.js"></script>
 </body>
 </html>

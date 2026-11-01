@@ -880,6 +880,11 @@ a.card:hover .icon { transform: scale(1.08) rotate(-4deg); }
 .page-hero.hero-center h1, .page-hero.hero-center .lead { margin-left: auto; margin-right: auto; }
 .page-hero.hero-center .lead { max-width: 40rem; }
 
+/* Runde 5: kürzere Startseite auf dem Handy */
+@media (max-width: 719px) { .m-hide { display: none !important; } }
+.m-only { display: none !important; }
+@media (max-width: 719px) { .m-only { display: grid !important; } .pledge-short { margin-top: 1.4rem; } }
+
 /* Live-Fassung: Markenbild statt Foto, Buchungskarte */
 .brand-frame{place-items:center;background:linear-gradient(170deg,#fbf7ee,#efe5cc)}
 .brand-frame img{width:72%;height:auto}
