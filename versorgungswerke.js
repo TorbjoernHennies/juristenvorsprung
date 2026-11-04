@@ -33,7 +33,7 @@
     var d = DATA[Number(i)];
     var h = "<h3>" + esc(d.n) + ": die wichtigsten Regeln</h3><dl class=\"vw-facts\">";
     ROWS.forEach(function (r) { if (d[r[1]]) h += "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(d[r[1]]) + "</dd></div>"; });
-    h += "</dl><p class=\"fine-note\">Stand Oktober 2026, aus der Satzung zusammengefasst. Maßgeblich ist deine aktuelle Satzung. Was das für deine Absicherung heißt, rechnen wir im Erstgespräch durch.</p>" +
+    h += "</dl><p class=\"fine-note\">Stand Oktober 2026. Wir haben die Regeln aus der Satzung deines Versorgungswerks zusammengefasst. Satzungen ändern sich, maßgeblich ist immer der aktuelle Wortlaut. Was das für deine Absicherung heißt, rechnen wir im Erstgespräch durch.</p>" +
          "<p style=\"margin-top:1rem\"><a class=\"btn btn-navy\" href=\"termin.html?thema=BU_VW&amp;quelle=vw-check\">Für dich durchrechnen</a></p>";
     result.innerHTML = h;
     result.className = "finder-result show";
