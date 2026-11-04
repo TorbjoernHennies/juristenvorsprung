@@ -48,7 +48,6 @@
 
     $("c-gap").textContent = Math.round(gapReal).toLocaleString("de-DE");
     $("c-year").textContent = "Rentenbeginn " + (YEAR + jahre) + ", in " + jahre + " Jahren";
-    $("c-gapnom").textContent = eur(gapNom);
     $("c-kap").textContent = eur(kapital);
     $("c-rate").textContent = eur(rate);
     $("c-vwreal").textContent = eur(vwReal);
