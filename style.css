@@ -885,6 +885,13 @@ a.card:hover .icon { transform: scale(1.08) rotate(-4deg); }
 .m-only { display: none !important; }
 @media (max-width: 719px) { .m-only { display: grid !important; } .pledge-short { margin-top: 1.4rem; } }
 
+/* Versorgungswerk-Check: Werte */
+.vw-facts { margin: 0 0 1rem; display: grid; gap: .7rem; max-width: 46rem; }
+.vw-facts > div { display: grid; grid-template-columns: 11rem 1fr; gap: .8rem; padding-bottom: .7rem; border-bottom: 1px solid rgba(0,0,0,.1); }
+.vw-facts dt { font-weight: 600; }
+.vw-facts dd { margin: 0; }
+@media (max-width: 560px) { .vw-facts > div { grid-template-columns: 1fr; gap: .15rem; } }
+
 /* Live-Fassung: Markenbild statt Foto, Buchungskarte */
 .brand-frame{place-items:center;background:linear-gradient(170deg,#fbf7ee,#efe5cc)}
 .brand-frame img{width:72%;height:auto}

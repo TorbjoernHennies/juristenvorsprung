@@ -1,5 +1,4 @@
-// Versorgungswerk-Check: zeigt Fragen, die man für das eigene Versorgungswerk klären sollte, keine Werte.
-// Die konkreten Daten (Wartezeit, Zulassungsregel, Beitrag, Rabatt) liegen in vw-data.js und werden hier bewusst nicht angezeigt.
+// Versorgungswerk-Check: zeigt die wichtigsten Satzungswerte je Versorgungswerk (Daten aus vw-data.js).
 (function () {
   "use strict";
   var DATA = window.VW_DATA || [];
@@ -18,22 +17,24 @@
     select.appendChild(o);
   });
 
-  var QUESTIONS = [
-    ["Berufsunfähigkeit", "Ab wann zahlt dein Versorgungswerk bei Berufsunfähigkeit, und was passiert bis dahin?"],
-    ["Zulassung", "Musst du für die BU-Rente die Zulassung abgeben, oder reicht es, die Tätigkeit einzustellen?"],
-    ["Definition", "Wann giltst du nach der Satzung als berufsunfähig, und wie viel Tätigkeit bleibt dir dabei erlaubt?"],
-    ["Rabatt", "Gibt es einen Beitragsrabatt für Berufsanfänger, und musst du ihn beantragen?"],
-    ["Beitrag", "Welchen Beitrag zahlst du, und was sind Zusatzbeiträge in deinem Fall wert?"],
-    ["Alter", "Ab wann bekommst du Altersrente, und was heißt das für deine Planung?"]
+  var ROWS = [
+    ["Wartezeit bis zur BU-Rente", "wz"],
+    ["Zulassung abgeben?", "zul"],
+    ["Zurechnungszeit bis Alter", "zur"],
+    ["Beitrag", "beitrag"],
+    ["Rabatt für Berufsanfänger", "rabatt"],
+    ["Zusatzbeiträge", "zusatz"],
+    ["Altersrente ab", "alter"],
+    ["Besonderheiten", "bes"]
   ];
 
   function render(i) {
     if (i === "") { result.className = "finder-result"; result.innerHTML = ""; mark(""); return; }
     var d = DATA[Number(i)];
-    var h = "<h3>Das solltest du für dein Versorgungswerk (" + esc(d.n) + ") klären</h3><ul class=\"qlist\">";
-    QUESTIONS.forEach(function (q) { h += "<li><span class=\"tag tag-gold\">" + esc(q[0]) + "</span><p>" + esc(q[1]) + "</p></li>"; });
-    h += "</ul><p>Wir haben deine Satzung ausgewertet. Die Antworten gehen wir im Gespräch mit dir durch.</p>" +
-         "<p style=\"margin-top:1rem\"><a class=\"btn btn-navy\" href=\"termin.html?thema=BU_VW&amp;quelle=vw-check\">Das im Gespräch klären</a></p>";
+    var h = "<h3>" + esc(d.n) + ": die wichtigsten Regeln</h3><dl class=\"vw-facts\">";
+    ROWS.forEach(function (r) { if (d[r[1]]) h += "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(d[r[1]]) + "</dd></div>"; });
+    h += "</dl><p class=\"fine-note\">Stand Oktober 2026, aus der Satzung zusammengefasst. Maßgeblich ist deine aktuelle Satzung. Was das für deine Absicherung heißt, rechnen wir im Erstgespräch durch.</p>" +
+         "<p style=\"margin-top:1rem\"><a class=\"btn btn-navy\" href=\"termin.html?thema=BU_VW&amp;quelle=vw-check\">Für dich durchrechnen</a></p>";
     result.innerHTML = h;
     result.className = "finder-result show";
     mark(i);
